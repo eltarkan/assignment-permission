@@ -5,6 +5,7 @@ import (
 	"assignment-permission/models"
 	"context"
 	log "github.com/sirupsen/logrus"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -12,6 +13,12 @@ type Group struct {
 	GroupID string   `json:"group_id" bson:"group_id"`
 	Role    string   `json:"role" bson:"role"`
 	Members []string `json:"member_ids" bson:"member_ids"`
+}
+
+type Permission struct {
+	Resource string            `bson:"resource"`
+	Users    []userPermission  `bson:"users"`
+	Groups   []groupPermission `bson:"groups"`
 }
 
 func CreateNewGroup(group Group) (*mongo.InsertOneResult, error) {
@@ -49,7 +56,7 @@ func GetPermissionByResourceName(resourceName string) (*Group, error) {
 	return &group, nil
 }
 
-func CreateNewPermission(permission permission) (*mongo.InsertOneResult, error) {
+func CreateNewPermission(permission *models.PermissionCreateRequest) (*mongo.InsertOneResult, error) {
 	var GroupRepository = config.DBConnection.Database(config.Config.MongodbName).Collection("permissions")
 
 	record, err := GroupRepository.InsertOne(context.Background(), permission)
@@ -58,6 +65,32 @@ func CreateNewPermission(permission permission) (*mongo.InsertOneResult, error) 
 		return nil, err
 	}
 	return record, nil
+}
+
+func GetPermissionByUserID(userID string) (*[]Permission, error) {
+	var PermissionRepository = config.DBConnection.Database(config.Config.MongodbName).Collection("permissions")
+
+	var group []Permission
+	var filter bson.M
+	if userID != "" {
+		filter = bson.M{
+			"$or": []bson.M{
+				{"users.user_id": userID},
+				{"groups.members": bson.M{"$elemMatch": bson.M{"$eq": userID}}},
+			},
+		}
+	}
+	cursor, err := PermissionRepository.Find(context.Background(), filter)
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+	err = cursor.All(context.Background(), &group)
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+	return &group, nil
 }
 
 func CreateRole(role *models.RoleCreateRequest) (*mongo.InsertOneResult, error) {
@@ -71,14 +104,19 @@ func CreateRole(role *models.RoleCreateRequest) (*mongo.InsertOneResult, error) 
 	return record, nil
 }
 
-func GetRoleByID(roleID string) (*role, error) {
+func ListAllRoles() (*[]role, error) {
 	var GroupRepository = config.DBConnection.Database(config.Config.MongodbName).Collection("roles")
 
-	var role role
-	err := GroupRepository.FindOne(context.Background(), map[string]string{"role_id": roleID}).Decode(&role)
+	var roles []role
+	cursor, err := GroupRepository.Find(context.Background(), bson.M{})
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
 	}
-	return &role, nil
+	err = cursor.All(context.Background(), &roles)
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+	return &roles, nil
 }

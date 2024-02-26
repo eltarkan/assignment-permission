@@ -56,7 +56,7 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/PermissionCreateSuccessResponse"
+              "$ref": "#/definitions/PermissionListAll"
             }
           },
           "500": {
@@ -103,7 +103,7 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/RoleCreateSuccessResponse"
+              "$ref": "#/definitions/RoleListAllResponse"
             }
           },
           "500": {
@@ -215,6 +215,33 @@ func init() {
         }
       }
     },
+    "PermissionListAll": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "example": [
+        {
+          "groups": [
+            {
+              "group_id": "group_1_id",
+              "members": [
+                "user_2_id",
+                "user_3_id"
+              ],
+              "role": "admin"
+            }
+          ],
+          "resource": "Resource ID",
+          "users": [
+            {
+              "role": "admin",
+              "user_id": "user_1_id"
+            }
+          ]
+        }
+      ]
+    },
     "RoleCreateRequest": {
       "type": "object",
       "properties": {
@@ -268,6 +295,23 @@ func init() {
           "example": "Role Name"
         }
       }
+    },
+    "RoleListAllResponse": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "example": [
+        {
+          "_id": "Role ID",
+          "actions": [
+            "read",
+            "write"
+          ],
+          "description": "Role Description",
+          "name": "Role Name"
+        }
+      ]
     }
   }
 }`))
@@ -310,7 +354,7 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/PermissionCreateSuccessResponse"
+              "$ref": "#/definitions/PermissionListAll"
             }
           },
           "500": {
@@ -357,7 +401,7 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/RoleCreateSuccessResponse"
+              "$ref": "#/definitions/RoleListAllResponse"
             }
           },
           "500": {
@@ -469,6 +513,33 @@ func init() {
         }
       }
     },
+    "PermissionListAll": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "example": [
+        {
+          "groups": [
+            {
+              "group_id": "group_1_id",
+              "members": [
+                "user_2_id",
+                "user_3_id"
+              ],
+              "role": "admin"
+            }
+          ],
+          "resource": "Resource ID",
+          "users": [
+            {
+              "role": "admin",
+              "user_id": "user_1_id"
+            }
+          ]
+        }
+      ]
+    },
     "RoleCreateRequest": {
       "type": "object",
       "properties": {
@@ -522,6 +593,23 @@ func init() {
           "example": "Role Name"
         }
       }
+    },
+    "RoleListAllResponse": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "example": [
+        {
+          "_id": "Role ID",
+          "actions": [
+            "read",
+            "write"
+          ],
+          "description": "Role Description",
+          "name": "Role Name"
+        }
+      ]
     }
   }
 }`))

@@ -26,7 +26,7 @@ type GetRoleOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.RoleCreateSuccessResponse `json:"body,omitempty"`
+	Payload models.RoleListAllResponse `json:"body,omitempty"`
 }
 
 // NewGetRoleOK creates GetRoleOK with default headers values
@@ -36,13 +36,13 @@ func NewGetRoleOK() *GetRoleOK {
 }
 
 // WithPayload adds the payload to the get role o k response
-func (o *GetRoleOK) WithPayload(payload *models.RoleCreateSuccessResponse) *GetRoleOK {
+func (o *GetRoleOK) WithPayload(payload models.RoleListAllResponse) *GetRoleOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the get role o k response
-func (o *GetRoleOK) SetPayload(payload *models.RoleCreateSuccessResponse) {
+func (o *GetRoleOK) SetPayload(payload models.RoleListAllResponse) {
 	o.Payload = payload
 }
 
@@ -50,11 +50,14 @@ func (o *GetRoleOK) SetPayload(payload *models.RoleCreateSuccessResponse) {
 func (o *GetRoleOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(200)
-	if o.Payload != nil {
-		payload := o.Payload
-		if err := producer.Produce(rw, payload); err != nil {
-			panic(err) // let the recovery middleware deal with this
-		}
+	payload := o.Payload
+	if payload == nil {
+		// return empty array
+		payload = models.RoleListAllResponse{}
+	}
+
+	if err := producer.Produce(rw, payload); err != nil {
+		panic(err) // let the recovery middleware deal with this
 	}
 }
 

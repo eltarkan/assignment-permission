@@ -26,7 +26,7 @@ type GetPermissionOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.PermissionCreateSuccessResponse `json:"body,omitempty"`
+	Payload models.PermissionListAll `json:"body,omitempty"`
 }
 
 // NewGetPermissionOK creates GetPermissionOK with default headers values
@@ -36,13 +36,13 @@ func NewGetPermissionOK() *GetPermissionOK {
 }
 
 // WithPayload adds the payload to the get permission o k response
-func (o *GetPermissionOK) WithPayload(payload *models.PermissionCreateSuccessResponse) *GetPermissionOK {
+func (o *GetPermissionOK) WithPayload(payload models.PermissionListAll) *GetPermissionOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the get permission o k response
-func (o *GetPermissionOK) SetPayload(payload *models.PermissionCreateSuccessResponse) {
+func (o *GetPermissionOK) SetPayload(payload models.PermissionListAll) {
 	o.Payload = payload
 }
 
@@ -50,11 +50,14 @@ func (o *GetPermissionOK) SetPayload(payload *models.PermissionCreateSuccessResp
 func (o *GetPermissionOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(200)
-	if o.Payload != nil {
-		payload := o.Payload
-		if err := producer.Produce(rw, payload); err != nil {
-			panic(err) // let the recovery middleware deal with this
-		}
+	payload := o.Payload
+	if payload == nil {
+		// return empty array
+		payload = models.PermissionListAll{}
+	}
+
+	if err := producer.Produce(rw, payload); err != nil {
+		panic(err) // let the recovery middleware deal with this
 	}
 }
 

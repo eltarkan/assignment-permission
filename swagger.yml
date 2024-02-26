@@ -49,7 +49,7 @@ paths:
                 200:
                     description: "OK"
                     schema:
-                        $ref: "#/definitions/RoleCreateSuccessResponse"
+                        $ref: "#/definitions/RoleListAllResponse"
                 500:
                     description: "Internal Server Error"
     /permission:
@@ -84,7 +84,7 @@ paths:
                 200:
                     description: "OK"
                     schema:
-                        $ref: "#/definitions/PermissionCreateSuccessResponse"
+                        $ref: "#/definitions/PermissionListAll"
                 500:
                     description: "Internal Server Error"
 definitions:
@@ -138,6 +138,28 @@ definitions:
                         "members": [ "user_2_id","user_3_id" ]
                     }
                 ]
+    PermissionListAll:
+        type: array
+        items:
+            type: object
+        example: [
+            {
+                "resource": "Resource ID",
+                "users": [
+                    {
+                        "user_id":"user_1_id",
+                        "role":"admin"
+                    }
+                ],
+                "groups": [
+                    {
+                        "group_id": "group_1_id",
+                        "role": "admin",
+                        "members": [ "user_2_id","user_3_id" ]
+                    }
+                ]
+            }
+        ]
     RoleCreateRequest:
         type: object
         properties:
@@ -172,3 +194,15 @@ definitions:
                 items:
                     type: string
                 example: ["read", "write"]
+    RoleListAllResponse:
+        type: array
+        items:
+            type: object
+        example: [
+            {
+                "_id": "Role ID",
+                "name": "Role Name",
+                "description": "Role Description",
+                "actions": ["read", "write"]
+            }
+        ]

@@ -14,7 +14,7 @@ type role struct {
 	ID          string   `bson:"_id"`
 	Name        string   `bson:"name"`
 	Description string   `bson:"description"`
-	Action      []string `bson:"action"`
+	Action      []string `bson:"actions"`
 }
 
 func (r *role) fetch(ctx context.Context, id string) (err error) {
