@@ -1,6 +1,10 @@
 package main
 
-import "context"
+import (
+	"assignment-permission/config"
+	"context"
+	"errors"
+)
 
 type document interface {
 	fetch(context.Context, string) error
@@ -14,8 +18,12 @@ type role struct {
 }
 
 func (r *role) fetch(ctx context.Context, id string) (err error) {
-
-	return
+	config.DBConnection.Database(config.Config.MongodbName).Collection("groups").FindOne(ctx, map[string]string{"_id": id}).Decode(r)
+	if r.ID == "" {
+		return errors.New("Role not found")
+	} else {
+		return nil
+	}
 }
 
 type permission struct {
@@ -26,7 +34,12 @@ type permission struct {
 
 func (r *permission) fetch(ctx context.Context, id string) (err error) {
 
-	return
+	config.DBConnection.Database(config.Config.MongodbName).Collection("groups").FindOne(ctx, map[string]string{"_id": id}).Decode(r)
+	if r.Resource == "" {
+		return errors.New("Permission not found")
+	} else {
+		return nil
+	}
 }
 
 type userPermission struct {

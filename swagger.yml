@@ -1,0 +1,174 @@
+swagger: "2.0"
+schemes:
+    - http
+info:
+    description: Qubitro Task
+    title: A Permission application
+    version: 1.0.0
+paths:
+    /:
+        get:
+            tags:
+                - "Health"
+            summary: "Health check"
+            description: "Health check"
+            responses:
+                200:
+                    description: "OK"
+                500:
+                    description: "Internal Server Error"
+    /role:
+        post:
+            tags:
+                - "Role"
+            summary: "Create Role"
+            description: "Create Role"
+            parameters:
+#                - in: header
+#                  name: Authorization
+#                  type: string
+#                  required: true
+#                  description: "Bearer"
+                - in: body
+                  name: body
+                  schema:
+                      $ref: "#/definitions/RoleCreateRequest"
+            responses:
+                200:
+                    description: "OK"
+                    schema:
+                        $ref: "#/definitions/RoleCreateSuccessResponse"
+                500:
+                    description: "Internal Server Error"
+        get:
+            tags:
+                - "Role"
+            summary: "Get Role"
+            description: "Get Role"
+            responses:
+                200:
+                    description: "OK"
+                    schema:
+                        $ref: "#/definitions/RoleCreateSuccessResponse"
+                500:
+                    description: "Internal Server Error"
+    /permission:
+        post:
+            tags:
+                - "Permission"
+            summary: "Create Permission"
+            description: "Create Permission"
+            parameters:
+#                - in: header
+#                  name: Authorization
+#                  type: string
+#                  required: true
+#                  description: "Bearer"
+                - in: body
+                  name: body
+                  schema:
+                      $ref: "#/definitions/PermissionCreateRequest"
+            responses:
+                200:
+                    description: "OK"
+                    schema:
+                        $ref: "#/definitions/PermissionCreateSuccessResponse"
+                500:
+                    description: "Internal Server Error"
+        get:
+            tags:
+                - "Permission"
+            summary: "Get Permission"
+            description: "Get Permission"
+            responses:
+                200:
+                    description: "OK"
+                    schema:
+                        $ref: "#/definitions/PermissionCreateSuccessResponse"
+                500:
+                    description: "Internal Server Error"
+definitions:
+    PermissionCreateRequest:
+        type: object
+        properties:
+            resource:
+                type: string
+                example: "Resource ID"
+            users:
+                type: array
+                items:
+                    type: object
+                example: [{
+                    "user_id":"user_1_id",
+                    "role":"admin"
+                }]
+            groups:
+                type: array
+                items:
+                    type: object
+                example: [
+                    {
+                        "group_id": "group_1_id",
+                        "role": "admin",
+                        "members": [ "user_2_id","user_3_id" ]
+                    }
+                ]
+    PermissionCreateSuccessResponse:
+        type: object
+        properties:
+            resource:
+                type: string
+                example: "Resource ID"
+            users:
+                type: array
+                items:
+                    type: object
+                example: [{
+                    "user_id":"user_1_id",
+                    "role":"admin"
+                }]
+            groups:
+                type: array
+                items:
+                    type: object
+                example: [
+                    {
+                        "group_id": "group_1_id",
+                        "role": "admin",
+                        "members": [ "user_2_id","user_3_id" ]
+                    }
+                ]
+    RoleCreateRequest:
+        type: object
+        properties:
+            _id:
+                type: string
+                example: "Role ID"
+            name:
+                type: string
+                example: "Role Name"
+            description:
+                type: string
+                example: "Role Description"
+            actions:
+                type: array
+                items:
+                    type: string
+                example: ["read", "write"]
+    RoleCreateSuccessResponse:
+        type: object
+        properties:
+            _id:
+                type: string
+                example: "Role ID"
+            name:
+                type: string
+                example: "Role Name"
+            description:
+                type: string
+                example: "Role Description"
+            actions:
+                type: array
+                items:
+                    type: string
+                example: ["read", "write"]
